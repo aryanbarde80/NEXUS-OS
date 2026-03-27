@@ -95,6 +95,30 @@ export default function GamificationPage() {
               ))}
             </CardContent>
           </Card>
+
+          <h2 className="text-lg font-semibold flex items-center gap-2 mt-4"><Target className="h-5 w-5 text-cyan-500" /> Active Quests</h2>
+          <div className="space-y-3">
+            {[
+              { name: "Weekly Sprint", desc: "Complete 20 tasks this week", progress: 65, reward: 200, deadline: "3 days left" },
+              { name: "Content Marathon", desc: "Generate 5 AI blog posts", progress: 40, reward: 150, deadline: "5 days left" },
+              { name: "Community Builder", desc: "Answer 10 community questions", progress: 80, reward: 300, deadline: "2 days left" },
+            ].map((quest) => (
+              <Card key={quest.name} className="hover:shadow-md transition-all">
+                <CardContent className="p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-medium">{quest.name}</h3>
+                    <Badge variant="outline" className="text-xs">+{quest.reward} XP</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{quest.desc}</p>
+                  <Progress value={quest.progress} className="h-1.5" />
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{quest.progress}% complete</span>
+                    <span>{quest.deadline}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>

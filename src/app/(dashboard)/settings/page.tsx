@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { User, Bell, Shield, CreditCard } from "lucide-react";
+import { User, Bell, Shield, CreditCard, Palette } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +24,7 @@ export default function SettingsPage() {
           <TabsTrigger value="notifications"><Bell className="mr-2 h-4 w-4" /> Notifications</TabsTrigger>
           <TabsTrigger value="security"><Shield className="mr-2 h-4 w-4" /> Security</TabsTrigger>
           <TabsTrigger value="billing"><CreditCard className="mr-2 h-4 w-4" /> Billing</TabsTrigger>
+          <TabsTrigger value="appearance"><Palette className="mr-2 h-4 w-4" /> Appearance</TabsTrigger>
         </TabsList>
 
         <TabsContent value="profile">
@@ -112,6 +113,43 @@ export default function SettingsPage() {
                   <div><h3 className="font-semibold">Free Plan</h3><p className="text-xs text-muted-foreground">1 project, basic AI, community support</p></div>
                   <Button variant="gradient">Upgrade to Pro</Button>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="appearance">
+          <Card>
+            <CardHeader>
+              <CardTitle>Appearance</CardTitle>
+              <CardDescription>Customize how NEXUS OS looks</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div><p className="text-sm font-medium">Theme</p><p className="text-xs text-muted-foreground">Choose between light and dark mode</p></div>
+                <div className="flex border rounded-md">
+                  <Button variant="secondary" size="sm">Light</Button>
+                  <Button variant="ghost" size="sm">Dark</Button>
+                  <Button variant="ghost" size="sm">System</Button>
+                </div>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <div><p className="text-sm font-medium">Accent Color</p><p className="text-xs text-muted-foreground">Primary color used across the interface</p></div>
+                <div className="flex gap-2">
+                  {["bg-violet-500", "bg-blue-500", "bg-green-500", "bg-rose-500", "bg-amber-500"].map((c) => (
+                    <button key={c} className={`h-6 w-6 rounded-full ${c} ${c === "bg-violet-500" ? "ring-2 ring-offset-2 ring-violet-500" : ""}`} />
+                  ))}
+                </div>
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <div><p className="text-sm font-medium">Compact Mode</p><p className="text-xs text-muted-foreground">Reduce spacing for denser layouts</p></div>
+                <Switch />
+              </div>
+              <Separator />
+              <div className="flex items-center justify-between">
+                <div><p className="text-sm font-medium">Animations</p><p className="text-xs text-muted-foreground">Enable interface animations and transitions</p></div>
+                <Switch defaultChecked />
               </div>
             </CardContent>
           </Card>

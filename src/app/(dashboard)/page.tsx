@@ -9,6 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+} from "recharts";
 
 const stats = [
   { name: "Active Projects", value: "12", change: "+2", icon: FolderKanban, color: "text-violet-500" },
@@ -30,6 +33,16 @@ const recentActivity = [
   { action: "New listing", detail: "React Dashboard Template", time: "1h ago", type: "marketplace" },
   { action: "Domain checked", detail: "nexusplatform.io - Available", time: "2h ago", type: "domain" },
   { action: "Achievement unlocked", detail: "First 100 tasks completed", time: "3h ago", type: "achievement" },
+];
+
+const activityChartData = [
+  { day: "Mon", tasks: 12, aiCredits: 85 },
+  { day: "Tue", tasks: 18, aiCredits: 120 },
+  { day: "Wed", tasks: 15, aiCredits: 95 },
+  { day: "Thu", tasks: 22, aiCredits: 150 },
+  { day: "Fri", tasks: 28, aiCredits: 180 },
+  { day: "Sat", tasks: 8, aiCredits: 45 },
+  { day: "Sun", tasks: 5, aiCredits: 30 },
 ];
 
 export default function DashboardPage() {
@@ -70,6 +83,32 @@ export default function DashboardPage() {
           );
         })}
       </div>
+
+      <Card>
+        <CardHeader><CardTitle className="text-lg">Weekly Activity</CardTitle></CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={250}>
+            <AreaChart data={activityChartData}>
+              <defs>
+                <linearGradient id="dashTasks" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="dashCredits" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+              <XAxis dataKey="day" stroke="#888" fontSize={12} />
+              <YAxis stroke="#888" fontSize={12} />
+              <Tooltip contentStyle={{ backgroundColor: "#1a1a2e", border: "1px solid #333", borderRadius: "8px" }} />
+              <Area type="monotone" dataKey="tasks" stroke="#8b5cf6" fillOpacity={1} fill="url(#dashTasks)" name="Tasks Completed" />
+              <Area type="monotone" dataKey="aiCredits" stroke="#06b6d4" fillOpacity={1} fill="url(#dashCredits)" name="AI Credits Used" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-7">
         <Card className="lg:col-span-4">

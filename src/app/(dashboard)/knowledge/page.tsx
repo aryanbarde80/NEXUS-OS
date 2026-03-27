@@ -47,26 +47,46 @@ export default function KnowledgePage() {
               <Button variant="outline" size="icon" className="bg-background/80 backdrop-blur"><Maximize2 className="h-4 w-4" /></Button>
             </div>
             <CardContent className="h-full flex items-center justify-center">
-              <div className="relative w-full h-full">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative">
-                    <div className="h-20 w-20 rounded-full bg-gradient-to-r from-violet-600 to-cyan-500 flex items-center justify-center text-white font-bold animate-pulse">N</div>
-                    {[0, 1, 2, 3, 4, 5].map((i) => {
-                      const angle = (i * 60 * Math.PI) / 180;
-                      const x = Math.cos(angle) * 150;
-                      const y = Math.sin(angle) * 150;
-                      return (
-                        <div key={i} className="absolute" style={{ left: `calc(50% + ${x}px - 20px)`, top: `calc(50% + ${y}px - 20px)` }}>
-                          <div className={`h-10 w-10 rounded-full ${typeColors[nodes[i]?.type || "project"]} flex items-center justify-center text-white text-xs font-medium cursor-pointer hover:scale-125 transition-transform`}>
-                            {nodes[i]?.label?.[0]}
-                          </div>
-                          <p className="text-xs text-center mt-1 text-muted-foreground">{nodes[i]?.label}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
+              <svg viewBox="0 0 600 500" className="w-full h-full">
+                {/* Connection lines */}
+                {[1, 2, 3, 4, 5].map((i) => {
+                  const angle = ((i - 1) * 72 * Math.PI) / 180;
+                  const x = 300 + Math.cos(angle) * 160;
+                  const y = 250 + Math.sin(angle) * 160;
+                  return <line key={`line-${i}`} x1="300" y1="250" x2={x} y2={y} stroke="currentColor" strokeOpacity={0.15} strokeWidth={1.5} />;
+                })}
+                {/* Cross connections */}
+                {[[1, 3], [2, 4], [3, 5], [1, 5]].map(([a, b], idx) => {
+                  const a1 = ((a - 1) * 72 * Math.PI) / 180;
+                  const b1 = ((b - 1) * 72 * Math.PI) / 180;
+                  return <line key={`cross-${idx}`} x1={300 + Math.cos(a1) * 160} y1={250 + Math.sin(a1) * 160} x2={300 + Math.cos(b1) * 160} y2={250 + Math.sin(b1) * 160} stroke="currentColor" strokeOpacity={0.08} strokeWidth={1} strokeDasharray="4 4" />;
+                })}
+                {/* Center node */}
+                <circle cx="300" cy="250" r="35" fill="url(#centerGrad)" className="animate-pulse" />
+                <text x="300" y="256" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold">N</text>
+                <text x="300" y="300" textAnchor="middle" fill="currentColor" fontSize="11" opacity={0.6}>NEXUS OS</text>
+                {/* Satellite nodes */}
+                {nodes.slice(1).map((node, i) => {
+                  const angle = (i * 72 * Math.PI) / 180;
+                  const x = 300 + Math.cos(angle) * 160;
+                  const y = 250 + Math.sin(angle) * 160;
+                  const colors: Record<string, string> = { technology: "#06b6d4", user: "#10b981", document: "#f59e0b", domain: "#3b82f6", task: "#ec4899" };
+                  return (
+                    <g key={node.id} className="cursor-pointer">
+                      <circle cx={x} cy={y} r="22" fill={colors[node.type] || "#8b5cf6"} opacity={0.8} />
+                      <text x={x} y={y + 1} textAnchor="middle" fill="white" fontSize="11" fontWeight="600" dominantBaseline="middle">{node.label[0]}</text>
+                      <text x={x} y={y + 38} textAnchor="middle" fill="currentColor" fontSize="10" opacity={0.6}>{node.label}</text>
+                      <text x={x} y={y + 50} textAnchor="middle" fill="currentColor" fontSize="9" opacity={0.4}>{node.connections} connections</text>
+                    </g>
+                  );
+                })}
+                <defs>
+                  <linearGradient id="centerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#8b5cf6" />
+                    <stop offset="100%" stopColor="#06b6d4" />
+                  </linearGradient>
+                </defs>
+              </svg>
             </CardContent>
           </Card>
         </div>
