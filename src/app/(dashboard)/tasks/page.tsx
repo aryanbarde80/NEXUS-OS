@@ -128,8 +128,37 @@ export default function TasksPage() {
         </TabsContent>
 
         <TabsContent value="timeline" className="mt-4">
-          <Card className="p-8 text-center text-muted-foreground">
-            <p>Timeline view with Gantt chart coming soon</p>
+          <Card>
+            <CardContent className="p-4">
+              <div className="space-y-1">
+                <div className="grid grid-cols-[200px_1fr] gap-4 text-xs text-muted-foreground border-b pb-2 mb-2">
+                  <span className="font-medium">Task</span>
+                  <div className="grid grid-cols-7 gap-1 text-center">
+                    {["Mar 20", "Mar 22", "Mar 24", "Mar 26", "Mar 28", "Mar 30", "Apr 1"].map((d) => (
+                      <span key={d}>{d}</span>
+                    ))}
+                  </div>
+                </div>
+                {tasks.map((task) => {
+                  const startCol = Math.max(0, Math.min(6, ["backlog", "todo", "in_progress", "in_review", "done"].indexOf(task.status)));
+                  const width = task.status === "done" ? 7 - startCol : Math.max(1, 3 - startCol + 1);
+                  return (
+                    <div key={task.id} className="grid grid-cols-[200px_1fr] gap-4 items-center py-1.5">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Badge variant="outline" className={`${priorityColors[task.priority]} shrink-0 text-[10px]`}>{task.priority[0].toUpperCase()}</Badge>
+                        <span className="text-sm truncate">{task.title}</span>
+                      </div>
+                      <div className="grid grid-cols-7 gap-1 h-7">
+                        <div
+                          className={`rounded-md ${task.status === "done" ? "bg-green-500/30 border border-green-500/50" : task.priority === "critical" ? "bg-red-500/30 border border-red-500/50" : "bg-violet-500/30 border border-violet-500/50"}`}
+                          style={{ gridColumn: `${startCol + 1} / span ${Math.min(width, 7 - startCol)}` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
           </Card>
         </TabsContent>
       </Tabs>

@@ -45,6 +45,13 @@ export default function VaultPage() {
         <Input placeholder="Search secrets..." className="pl-9" />
       </div>
 
+      <div className="grid gap-4 md:grid-cols-4 mb-6">
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{vaultItems.length}</div><p className="text-xs text-muted-foreground">Total Secrets</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{vaultItems.filter(i => i.type === "api_key").length}</div><p className="text-xs text-muted-foreground">API Keys</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{vaultItems.filter(i => i.sharedWith > 0).length}</div><p className="text-xs text-muted-foreground">Shared Items</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold text-green-500">256-bit</div><p className="text-xs text-muted-foreground">Encryption</p></CardContent></Card>
+      </div>
+
       <div className="space-y-3">
         {vaultItems.map((item) => {
           const Icon = typeIcons[item.type] || Key;

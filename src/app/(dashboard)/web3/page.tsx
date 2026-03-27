@@ -85,6 +85,42 @@ export default function Web3Page() {
               </CardContent>
             </Card>
           ))}
+
+          <h2 className="text-lg font-semibold mt-6">Treasury</h2>
+          <Card className="border-violet-500/20">
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Total Treasury</span>
+                <span className="text-lg font-bold gradient-text">125,000 NEXUS</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">USD Value</span>
+                <span className="text-sm font-medium">~$25,000</span>
+              </div>
+              <div className="space-y-2 pt-2 border-t">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Development Fund</span>
+                  <span>60,000 NEXUS</span>
+                </div>
+                <Progress value={48} className="h-1.5" />
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Marketing Fund</span>
+                  <span>30,000 NEXUS</span>
+                </div>
+                <Progress value={24} className="h-1.5" />
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Bug Bounty</span>
+                  <span>20,000 NEXUS</span>
+                </div>
+                <Progress value={16} className="h-1.5" />
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">Community Rewards</span>
+                  <span>15,000 NEXUS</span>
+                </div>
+                <Progress value={12} className="h-1.5" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

@@ -62,8 +62,50 @@ export default function CommunityPage() {
             </Card>
           ))}
         </TabsContent>
-        <TabsContent value="popular" className="mt-4"><Card className="p-8 text-center text-muted-foreground">Popular posts</Card></TabsContent>
-        <TabsContent value="unanswered" className="mt-4"><Card className="p-8 text-center text-muted-foreground">Unanswered questions</Card></TabsContent>
+        <TabsContent value="popular" className="mt-4 space-y-3">
+          {[...posts].sort((a, b) => b.likes - a.likes).map((post) => (
+            <Card key={post.id} className="hover:shadow-md transition-all cursor-pointer">
+              <CardContent className="flex items-center gap-4 p-4">
+                <Avatar className="h-10 w-10"><AvatarFallback className="bg-primary/10 text-primary text-sm">{post.author.split(" ").map(n => n[0]).join("")}</AvatarFallback></Avatar>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    {post.isPinned && <Pin className="h-3 w-3 text-amber-500" />}
+                    {post.isSolved && <CheckCircle2 className="h-3 w-3 text-green-500" />}
+                    <h3 className="font-medium text-sm truncate">{post.title}</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{post.author} - {post.time}</p>
+                </div>
+                <Badge variant="outline">{post.category}</Badge>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1"><MessageSquare className="h-3 w-3" />{post.replies}</span>
+                  <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{post.views}</span>
+                  <span className="flex items-center gap-1 text-amber-500 font-medium"><ThumbsUp className="h-3 w-3" />{post.likes}</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
+        <TabsContent value="unanswered" className="mt-4 space-y-3">
+          {posts.filter(p => !p.isSolved).map((post) => (
+            <Card key={post.id} className="hover:shadow-md transition-all cursor-pointer border-amber-500/20">
+              <CardContent className="flex items-center gap-4 p-4">
+                <Avatar className="h-10 w-10"><AvatarFallback className="bg-primary/10 text-primary text-sm">{post.author.split(" ").map(n => n[0]).join("")}</AvatarFallback></Avatar>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium text-sm truncate">{post.title}</h3>
+                    <Badge variant="warning" className="text-xs">Needs Answer</Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{post.author} - {post.time}</p>
+                </div>
+                <Badge variant="outline">{post.category}</Badge>
+                <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1"><MessageSquare className="h-3 w-3" />{post.replies}</span>
+                  <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{post.views}</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
       </Tabs>
     </div>
   );

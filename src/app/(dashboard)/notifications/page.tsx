@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Bell, CheckSquare, Sparkles, Store, Trophy, Users, Check, Trash2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const notifications = [
   { id: "1", type: "task_assigned", title: "New task assigned", content: "You have been assigned to \"Implement payment gateway\"", time: "2 min ago", read: false, icon: CheckSquare, color: "text-blue-500" },
@@ -14,7 +15,21 @@ const notifications = [
   { id: "6", type: "comment_added", title: "New comment", content: "Alex K. commented on your task \"API Integration\"", time: "1 day ago", read: true, icon: Bell, color: "text-pink-500" },
 ];
 
+const filterTypes = ["All", "Tasks", "AI", "Marketplace", "Achievements", "Social"];
+const typeMapping: Record<string, string[]> = {
+  All: [],
+  Tasks: ["task_assigned"],
+  AI: ["agent_completed"],
+  Marketplace: ["marketplace_sale"],
+  Achievements: ["achievement_unlocked"],
+  Social: ["project_invite", "comment_added"],
+};
+
 export default function NotificationsPage() {
+  const [activeFilter, setActiveFilter] = useState("All");
+  const filtered = activeFilter === "All" ? notifications : notifications.filter(n => typeMapping[activeFilter]?.includes(n.type));
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -28,8 +43,17 @@ export default function NotificationsPage() {
         </div>
       </div>
 
+      <div className="flex items-center gap-2 flex-wrap">
+        {filterTypes.map((f) => (
+          <Button key={f} variant={activeFilter === f ? "default" : "outline"} size="sm" onClick={() => setActiveFilter(f)}>
+            {f}
+            {f === "All" && unreadCount > 0 && <Badge variant="secondary" className="ml-1.5 h-5 w-5 p-0 flex items-center justify-center text-[10px]">{unreadCount}</Badge>}
+          </Button>
+        ))}
+      </div>
+
       <div className="space-y-2">
-        {notifications.map((notif) => {
+        {filtered.map((notif) => {
           const Icon = notif.icon;
           return (
             <Card key={notif.id} className={`hover:shadow-md transition-all cursor-pointer ${!notif.read ? "border-primary/20 bg-primary/5" : ""}`}>
@@ -47,6 +71,12 @@ export default function NotificationsPage() {
             </Card>
           );
         })}
+        {filtered.length === 0 && (
+          <Card className="p-8 text-center text-muted-foreground">
+            <Bell className="h-12 w-12 mx-auto mb-3 opacity-30" />
+            <p>No notifications in this category</p>
+          </Card>
+        )}
       </div>
     </div>
   );

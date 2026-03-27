@@ -57,7 +57,10 @@ export default function DomainsPage() {
       {searched && (
         <div className="grid gap-6 lg:grid-cols-5">
           <div className="lg:col-span-3 space-y-4">
-            <h2 className="text-lg font-semibold">Domain Results</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Domain Results</h2>
+              <Badge variant="secondary">{searchResults.filter(r => r.available).length} available</Badge>
+            </div>
             {searchResults.map((result) => (
               <Card key={result.domain} className="hover:shadow-md transition-all">
                 <CardContent className="flex items-center gap-4 p-4">

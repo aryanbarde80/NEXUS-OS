@@ -52,7 +52,7 @@ export default function AIStudioPage() {
           <TabsTrigger value="history">History</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="generate" className="mt-4">
+        <TabsContent value="generate" className="mt-4 space-y-4">
           <Card>
             <CardHeader>
               <CardTitle>AI Content Generator</CardTitle>
@@ -67,6 +67,27 @@ export default function AIStudioPage() {
                   <Badge variant="outline">~2000 words</Badge>
                 </div>
                 <Button variant="gradient"><Sparkles className="mr-2 h-4 w-4" /> Generate</Button>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="border-dashed">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2"><Sparkles className="h-4 w-4 text-violet-500" /> Generated Output</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-lg bg-muted/50 p-6 min-h-[200px]">
+                <p className="text-sm text-muted-foreground italic">Your generated content will appear here. Enter a prompt above and click Generate to get started.</p>
+                <div className="mt-4 space-y-2">
+                  <div className="h-3 bg-muted rounded w-full animate-pulse" />
+                  <div className="h-3 bg-muted rounded w-5/6 animate-pulse" />
+                  <div className="h-3 bg-muted rounded w-4/6 animate-pulse" />
+                  <div className="h-3 bg-muted rounded w-full animate-pulse" />
+                  <div className="h-3 bg-muted rounded w-3/4 animate-pulse" />
+                </div>
+              </div>
+              <div className="flex items-center justify-end gap-2 mt-4">
+                <Button variant="outline" size="sm" disabled><Copy className="mr-2 h-3 w-3" /> Copy</Button>
+                <Button variant="outline" size="sm" disabled><Download className="mr-2 h-3 w-3" /> Export</Button>
               </div>
             </CardContent>
           </Card>
@@ -96,10 +117,33 @@ export default function AIStudioPage() {
         </TabsContent>
 
         <TabsContent value="history" className="mt-4">
-          <Card className="p-8 text-center text-muted-foreground">
-            <Sparkles className="h-12 w-12 mx-auto mb-3 opacity-50" />
-            <p>Your AI generation history will appear here</p>
-          </Card>
+          <div className="space-y-3">
+            {[
+              { prompt: "Write a blog post about AI trends in 2025", model: "GPT-4", type: "Blog Post", tokens: 2450, date: "Mar 25, 2025", status: "completed" },
+              { prompt: "Generate product descriptions for marketplace listings", model: "Claude", type: "Marketing", tokens: 1200, date: "Mar 24, 2025", status: "completed" },
+              { prompt: "Analyze competitor websites and summarize key features", model: "GPT-4", type: "Research", tokens: 3100, date: "Mar 23, 2025", status: "completed" },
+              { prompt: "Create SEO-optimized meta descriptions for 10 pages", model: "GPT-4", type: "SEO", tokens: 850, date: "Mar 22, 2025", status: "completed" },
+              { prompt: "Draft an email newsletter about Web3 governance", model: "Claude", type: "Email", tokens: 1800, date: "Mar 21, 2025", status: "completed" },
+            ].map((item, i) => (
+              <Card key={i} className="hover:shadow-md transition-all">
+                <CardContent className="flex items-center gap-4 p-4">
+                  <div className="h-10 w-10 rounded-lg bg-gradient-to-r from-violet-600/20 to-cyan-500/20 flex items-center justify-center">
+                    <Sparkles className="h-5 w-5 text-violet-500" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{item.prompt}</p>
+                    <p className="text-xs text-muted-foreground">{item.date} &middot; {item.tokens} tokens</p>
+                  </div>
+                  <Badge variant="outline">{item.model}</Badge>
+                  <Badge variant="secondary">{item.type}</Badge>
+                  <div className="flex gap-1">
+                    <Button variant="ghost" size="icon"><Copy className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon"><Download className="h-4 w-4" /></Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </TabsContent>
       </Tabs>
     </div>

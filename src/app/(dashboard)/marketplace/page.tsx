@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 
 
 const categories = ["All", "Prompts", "Templates", "Code", "Domains", "Services", "Assets", "Courses"];
+const sortOptions = ["Popular", "Newest", "Price: Low", "Price: High"];
 
 const listings = [
   { id: "1", title: "AI-Powered SaaS Dashboard Template", category: "templates", price: 49, rating: 4.8, reviews: 124, downloads: 1580, seller: "DesignPro", thumbnail: "gradient-1", tags: ["React", "Tailwind", "AI"] },
@@ -46,12 +47,26 @@ export default function MarketplacePage() {
         <Button variant="outline" size="icon"><Filter className="h-4 w-4" /></Button>
       </div>
 
-      <div className="flex gap-2 flex-wrap">
-        {categories.map((cat) => (
-          <Button key={cat} variant={selectedCategory === cat ? "default" : "outline"} size="sm" onClick={() => setSelectedCategory(cat)}>
-            {cat}
-          </Button>
-        ))}
+      <div className="grid gap-4 md:grid-cols-4 mb-2">
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">{listings.length}</div><p className="text-xs text-muted-foreground">Total Listings</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">$2,786</div><p className="text-xs text-muted-foreground">Total Volume</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">6,350</div><p className="text-xs text-muted-foreground">Downloads</p></CardContent></Card>
+        <Card><CardContent className="pt-6"><div className="text-2xl font-bold">4.7</div><p className="text-xs text-muted-foreground">Avg Rating</p></CardContent></Card>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex gap-2 flex-wrap">
+          {categories.map((cat) => (
+            <Button key={cat} variant={selectedCategory === cat ? "default" : "outline"} size="sm" onClick={() => setSelectedCategory(cat)}>
+              {cat}
+            </Button>
+          ))}
+        </div>
+        <div className="flex gap-1">
+          {sortOptions.map((s) => (
+            <Button key={s} variant="ghost" size="sm" className="text-xs">{s}</Button>
+          ))}
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
