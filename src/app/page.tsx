@@ -115,7 +115,7 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <Button variant="ghost" asChild><Link href="/login">Sign In</Link></Button>
-            <Button variant="gradient" asChild><Link href="/register">Get Started <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
+            <Button variant="gradient" asChild><Link href="/dashboard">Open Workspace <ArrowRight className="ml-2 h-4 w-4" /></Link></Button>
           </div>
         </div>
       </nav>
@@ -137,7 +137,7 @@ export default function LandingPage() {
           </p>
           <div className="flex items-center justify-center gap-4 mb-16">
             <Button variant="gradient" size="xl" asChild>
-              <Link href="/register"><Sparkles className="mr-2 h-5 w-5" /> Start Building Free</Link>
+              <Link href="/dashboard"><Sparkles className="mr-2 h-5 w-5" /> Open Workspace</Link>
             </Button>
             <Button variant="outline" size="xl" asChild>
               <a href="https://github.com/aryanbarde80/NEXUS-OS" target="_blank" rel="noopener noreferrer">
@@ -234,7 +234,7 @@ export default function LandingPage() {
                   ))}
                 </ul>
                 <Button variant={tier.highlighted ? "gradient" : "outline"} className="w-full" asChild>
-                  <Link href="/register">{tier.cta} <ChevronRight className="ml-1 h-4 w-4" /></Link>
+                  <Link href="/dashboard">{tier.cta} <ChevronRight className="ml-1 h-4 w-4" /></Link>
                 </Button>
               </CardContent>
             </Card>
@@ -253,7 +253,7 @@ export default function LandingPage() {
           </p>
           <div className="flex items-center justify-center gap-4">
             <Button variant="gradient" size="xl" asChild>
-              <Link href="/register"><Sparkles className="mr-2 h-5 w-5" /> Get Started Free</Link>
+              <Link href="/dashboard"><Sparkles className="mr-2 h-5 w-5" /> Open Workspace</Link>
             </Button>
             <Button variant="outline" size="xl" asChild>
               <a href="https://github.com/aryanbarde80/NEXUS-OS" target="_blank" rel="noopener noreferrer">View on GitHub</a>

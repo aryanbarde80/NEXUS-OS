@@ -57,7 +57,9 @@ export default function LoginPage() {
               </div>
             </div>
           </div>
-          <Button className="w-full" variant="gradient" size="lg">Sign In</Button>
+          <Button className="w-full" variant="gradient" size="lg" asChild>
+            <Link href="/dashboard">Sign In</Link>
+          </Button>
         </CardContent>
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">

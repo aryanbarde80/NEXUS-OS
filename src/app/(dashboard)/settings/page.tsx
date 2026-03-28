@@ -1,21 +1,50 @@
 "use client";
 
-import React from "react";
-import { User, Bell, Shield, CreditCard, Palette } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { Bell, CreditCard, Palette, Shield, User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { useAppStore } from "@/lib/store";
 
 export default function SettingsPage() {
+  const user = useAppStore((state) => state.user);
+  const updateUser = useAppStore((state) => state.updateUser);
+  const theme = useAppStore((state) => state.theme);
+  const setTheme = useAppStore((state) => state.setTheme);
+
+  const [profileForm, setProfileForm] = useState({
+    name: user?.profile.name ?? "",
+    username: user?.username ?? "",
+    email: user?.email ?? "",
+    bio: user?.profile.bio ?? "",
+    website: user?.profile.website ?? "",
+  });
+
+  useEffect(() => {
+    setProfileForm({
+      name: user?.profile.name ?? "",
+      username: user?.username ?? "",
+      email: user?.email ?? "",
+      bio: user?.profile.bio ?? "",
+      website: user?.profile.website ?? "",
+    });
+  }, [user]);
+
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="text-muted-foreground">Manage your account and preferences</p>
+        <p className="text-muted-foreground">Manage the actual persisted workspace profile and preferences.</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-4">
@@ -30,19 +59,50 @@ export default function SettingsPage() {
         <TabsContent value="profile">
           <Card>
             <CardHeader>
-              <CardTitle>Profile Settings</CardTitle>
-              <CardDescription>Update your personal information</CardDescription>
+              <CardTitle>Profile</CardTitle>
+              <CardDescription>Changes here update the shared workspace identity.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2"><Label>Full Name</Label><Input defaultValue="Nexus User" /></div>
-                <div className="space-y-2"><Label>Username</Label><Input defaultValue="nexususer" /></div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Name</Label>
+                  <Input value={profileForm.name} onChange={(event) => setProfileForm((current) => ({ ...current, name: event.target.value }))} />
+                </div>
+                <div className="space-y-2">
+                  <Label>Username</Label>
+                  <Input value={profileForm.username} onChange={(event) => setProfileForm((current) => ({ ...current, username: event.target.value }))} />
+                </div>
               </div>
-              <div className="space-y-2"><Label>Email</Label><Input defaultValue="user@nexus.app" type="email" /></div>
-              <div className="space-y-2"><Label>Bio</Label><Input defaultValue="Building the future with NEXUS OS" /></div>
-              <div className="space-y-2"><Label>Website</Label><Input defaultValue="https://nexus.app" /></div>
-              <Separator />
-              <Button variant="gradient">Save Changes</Button>
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <Input value={profileForm.email} onChange={(event) => setProfileForm((current) => ({ ...current, email: event.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Bio</Label>
+                <Textarea value={profileForm.bio} onChange={(event) => setProfileForm((current) => ({ ...current, bio: event.target.value }))} />
+              </div>
+              <div className="space-y-2">
+                <Label>Website</Label>
+                <Input value={profileForm.website} onChange={(event) => setProfileForm((current) => ({ ...current, website: event.target.value }))} />
+              </div>
+              <Button
+                variant="gradient"
+                onClick={() =>
+                  updateUser((current) => ({
+                    ...current,
+                    username: profileForm.username,
+                    email: profileForm.email,
+                    profile: {
+                      ...current.profile,
+                      name: profileForm.name,
+                      bio: profileForm.bio,
+                      website: profileForm.website,
+                    },
+                  }))
+                }
+              >
+                Save profile
+              </Button>
             </CardContent>
           </Card>
         </TabsContent>
@@ -51,20 +111,31 @@ export default function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Notification Preferences</CardTitle>
-              <CardDescription>Choose how you want to be notified</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {[
-                { label: "Email notifications", desc: "Receive email updates" },
-                { label: "Push notifications", desc: "Browser push notifications" },
-                { label: "Task assignments", desc: "When tasks are assigned to you" },
-                { label: "Project updates", desc: "Updates on projects you follow" },
-                { label: "Marketplace", desc: "Sales and purchase notifications" },
-                { label: "AI agent alerts", desc: "When agents complete runs" },
+                { label: "Email alerts", key: "email" as const },
+                { label: "Push alerts", key: "push" as const },
+                { label: "SMS alerts", key: "sms" as const },
+                { label: "In-app alerts", key: "inApp" as const },
               ].map((item) => (
-                <div key={item.label} className="flex items-center justify-between">
-                  <div><p className="text-sm font-medium">{item.label}</p><p className="text-xs text-muted-foreground">{item.desc}</p></div>
-                  <Switch defaultChecked />
+                <div key={item.key} className="flex items-center justify-between">
+                  <span>{item.label}</span>
+                  <Switch
+                    checked={user.settings.notifications[item.key]}
+                    onCheckedChange={(checked) =>
+                      updateUser((current) => ({
+                        ...current,
+                        settings: {
+                          ...current.settings,
+                          notifications: {
+                            ...current.settings.notifications,
+                            [item.key]: checked,
+                          },
+                        },
+                      }))
+                    }
+                  />
                 </div>
               ))}
             </CardContent>
@@ -74,28 +145,26 @@ export default function SettingsPage() {
         <TabsContent value="security">
           <Card>
             <CardHeader>
-              <CardTitle>Security Settings</CardTitle>
-              <CardDescription>Manage your account security</CardDescription>
+              <CardTitle>Security</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div><p className="text-sm font-medium">Two-Factor Authentication</p><p className="text-xs text-muted-foreground">Add extra security to your account</p></div>
-                <Button variant="outline">Enable 2FA</Button>
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div><p className="text-sm font-medium">Change Password</p><p className="text-xs text-muted-foreground">Update your password</p></div>
-                <Button variant="outline">Change</Button>
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div><p className="text-sm font-medium">Connected Wallets</p><p className="text-xs text-muted-foreground">Manage Web3 wallet connections</p></div>
-                <Button variant="outline">Manage</Button>
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div><p className="text-sm font-medium text-red-500">Delete Account</p><p className="text-xs text-muted-foreground">Permanently delete your account</p></div>
-                <Button variant="destructive">Delete</Button>
+              <div className="flex items-center justify-between rounded-2xl border border-border/60 p-4">
+                <div>
+                  <p className="font-medium">Two-factor authentication</p>
+                  <p className="text-sm text-muted-foreground">Persisted in your workspace profile for MVP demos.</p>
+                </div>
+                <Switch
+                  checked={user.settings.twoFactorEnabled}
+                  onCheckedChange={(checked) =>
+                    updateUser((current) => ({
+                      ...current,
+                      settings: {
+                        ...current.settings,
+                        twoFactorEnabled: checked,
+                      },
+                    }))
+                  }
+                />
               </div>
             </CardContent>
           </Card>
@@ -104,52 +173,41 @@ export default function SettingsPage() {
         <TabsContent value="billing">
           <Card>
             <CardHeader>
-              <CardTitle>Billing & Subscription</CardTitle>
-              <CardDescription>Manage your plan and payment methods</CardDescription>
+              <CardTitle>Billing</CardTitle>
+              <CardDescription>Static plan details for the MVP shell.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="rounded-lg border p-4 bg-gradient-to-r from-violet-600/5 to-cyan-500/5">
-                <div className="flex items-center justify-between">
-                  <div><h3 className="font-semibold">Free Plan</h3><p className="text-xs text-muted-foreground">1 project, basic AI, community support</p></div>
-                  <Button variant="gradient">Upgrade to Pro</Button>
+            <CardContent>
+              <div className="flex items-center justify-between rounded-2xl border border-violet-500/20 bg-violet-500/5 p-4">
+                <div>
+                  <p className="font-medium">Prototyping Plan</p>
+                  <p className="text-sm text-muted-foreground">Includes unlimited local projects and AI workspace demos.</p>
                 </div>
+                <Badge variant="outline">Internal</Badge>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
+
         <TabsContent value="appearance">
           <Card>
             <CardHeader>
               <CardTitle>Appearance</CardTitle>
-              <CardDescription>Customize how NEXUS OS looks</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div><p className="text-sm font-medium">Theme</p><p className="text-xs text-muted-foreground">Choose between light and dark mode</p></div>
-                <div className="flex border rounded-md">
-                  <Button variant="secondary" size="sm">Light</Button>
-                  <Button variant="ghost" size="sm">Dark</Button>
-                  <Button variant="ghost" size="sm">System</Button>
-                </div>
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div><p className="text-sm font-medium">Accent Color</p><p className="text-xs text-muted-foreground">Primary color used across the interface</p></div>
-                <div className="flex gap-2">
-                  {["bg-violet-500", "bg-blue-500", "bg-green-500", "bg-rose-500", "bg-amber-500"].map((c) => (
-                    <button key={c} className={`h-6 w-6 rounded-full ${c} ${c === "bg-violet-500" ? "ring-2 ring-offset-2 ring-violet-500" : ""}`} />
-                  ))}
-                </div>
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div><p className="text-sm font-medium">Compact Mode</p><p className="text-xs text-muted-foreground">Reduce spacing for denser layouts</p></div>
-                <Switch />
-              </div>
-              <Separator />
-              <div className="flex items-center justify-between">
-                <div><p className="text-sm font-medium">Animations</p><p className="text-xs text-muted-foreground">Enable interface animations and transitions</p></div>
-                <Switch defaultChecked />
+              <div className="flex flex-wrap gap-2">
+                {[
+                  { label: "Light", value: "light" as const },
+                  { label: "Dark", value: "dark" as const },
+                  { label: "System", value: "system" as const },
+                ].map((option) => (
+                  <Button
+                    key={option.value}
+                    variant={theme === option.value ? "secondary" : "outline"}
+                    onClick={() => setTheme(option.value)}
+                  >
+                    {option.label}
+                  </Button>
+                ))}
               </div>
             </CardContent>
           </Card>

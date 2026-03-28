@@ -55,7 +55,9 @@ export default function RegisterPage() {
               </div>
             </div>
           </div>
-          <Button className="w-full" variant="gradient" size="lg">Create Account</Button>
+          <Button className="w-full" variant="gradient" size="lg" asChild>
+            <Link href="/dashboard">Create Account</Link>
+          </Button>
           <p className="text-xs text-center text-muted-foreground">
             By creating an account, you agree to our <Link href="#" className="text-primary hover:underline">Terms</Link> and <Link href="#" className="text-primary hover:underline">Privacy Policy</Link>
           </p>
